@@ -214,7 +214,7 @@ public:
     void Copy(const wxPlatform& platform);
 
     // Specify an optional default value
-    wxPlatform(int defValue) { Init(); m_longValue = (long)defValue; }
+    wxPlatform(int defValue) { Init(); m_longValue = static_cast<long>(defValue); }
     wxPlatform(long defValue) { Init(); m_longValue = defValue; }
     wxPlatform(const wxString& defValue) { Init(); m_stringValue = defValue; }
     wxPlatform(double defValue) { Init(); m_doubleValue = defValue; }
@@ -225,11 +225,11 @@ public:
     wxPlatform& ElseIfNot(int platform, long value);
     wxPlatform& Else(long value);
 
-    static wxPlatform If(int platform, int value) { return If(platform, (long)value); }
-    static wxPlatform IfNot(int platform, int value) { return IfNot(platform, (long)value); }
-    wxPlatform& ElseIf(int platform, int value) { return ElseIf(platform, (long) value); }
-    wxPlatform& ElseIfNot(int platform, int value) { return ElseIfNot(platform, (long) value); }
-    wxPlatform& Else(int value) { return Else((long) value); }
+    static wxPlatform If(int platform, int value) { return If(platform, static_cast<long>(value)); }
+    static wxPlatform IfNot(int platform, int value) { return IfNot(platform, static_cast<long>(value)); }
+    wxPlatform& ElseIf(int platform, int value) { return ElseIf(platform, static_cast<long>( value)); }
+    wxPlatform& ElseIfNot(int platform, int value) { return ElseIfNot(platform, static_cast<long>( value)); }
+    wxPlatform& Else(int value) { return Else(static_cast<long>(value)); }
 
     static wxPlatform If(int platform, double value);
     static wxPlatform IfNot(int platform, double value);
@@ -247,7 +247,7 @@ public:
     const wxString& GetString() const { return m_stringValue; }
     double GetDouble() const { return m_doubleValue; }
 
-    operator int() const { return (int) GetInteger(); }
+    operator int() const { return static_cast<int>(GetInteger()); }
     operator long() const { return GetInteger(); }
     operator double() const { return GetDouble(); }
     operator const wxString&() const { return GetString(); }

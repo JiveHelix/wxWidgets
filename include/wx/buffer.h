@@ -228,7 +228,8 @@ protected:
 
     static CharType *StrCopy(const CharType *src, size_t len)
     {
-        CharType *dst = (CharType*)malloc(sizeof(CharType) * (len + 1));
+        CharType *dst = static_cast<CharType *>(
+            malloc(sizeof(CharType) * (len + 1)));
         if ( dst )
             memcpy(dst, src, sizeof(CharType) * (len + 1));
         return dst;
@@ -268,10 +269,11 @@ public:
 
     wxCharTypeBuffer(size_t len)
     {
-        CharType* const str = (CharType *)malloc((len + 1)*sizeof(CharType));
+        CharType* const str = static_cast<CharType *>(
+            malloc((len + 1)*sizeof(CharType)));
         if ( str )
         {
-            str[len] = (CharType)0;
+            str[len] = static_cast<CharType>(0);
 
             // There is a potential memory leak here if new throws because it
             // fails to allocate Data, we ought to use new(nothrow) here, but
@@ -321,13 +323,14 @@ public:
         wxASSERT_MSG( this->m_data->m_ref == 1, "can't extend shared buffer" );
 
         CharType *str =
-            (CharType *)realloc(this->data(), (len + 1) * sizeof(CharType));
+            static_cast<CharType *>(
+                realloc(this->data(), (len + 1) * sizeof(CharType)));
         if ( !str )
             return false;
 
         // For consistency with the ctor taking just the length, NUL-terminate
         // the buffer.
-        str[len] = (CharType)0;
+        str[len] = static_cast<CharType>(0);
 
         if ( this->m_data == this->GetNullData() )
         {
@@ -575,7 +578,7 @@ public:
     void *GetAppendBuf(size_t sizeNeeded)
     {
         m_bufdata->ResizeIfNeeded(m_bufdata->m_len + sizeNeeded);
-        return (char*)m_bufdata->m_data + m_bufdata->m_len;
+        return static_cast<char*>(m_bufdata->m_data) + m_bufdata->m_len;
     }
 
     // Update the length after the append
@@ -590,7 +593,7 @@ public:
         wxCHECK_RET( m_bufdata->m_data, wxT("invalid wxMemoryBuffer") );
 
         m_bufdata->ResizeIfNeeded(m_bufdata->m_len + 1);
-        *(((char*)m_bufdata->m_data) + m_bufdata->m_len) = data;
+        *(static_cast<char*>(m_bufdata->m_data) + m_bufdata->m_len) = data;
         m_bufdata->m_len += 1;
     }
 
@@ -600,7 +603,10 @@ public:
         UngetAppendBuf(len);
     }
 
-    operator const char *() const { return (const char*)GetData(); }
+    operator const char *() const
+    {
+        return static_cast<const char*>(GetData());
+    }
 
     // gives up ownership of data, returns the pointer; after this call,
     // data isn't freed by the buffer and its content is resent to empty

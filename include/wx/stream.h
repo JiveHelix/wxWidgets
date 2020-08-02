@@ -476,11 +476,28 @@ public:
     void *GetBufferStart() const { return m_buffer_start; }
     void *GetBufferEnd() const { return m_buffer_end; }
     void *GetBufferPos() const { return m_buffer_pos; }
-    size_t GetBufferSize() const { return m_buffer_end - m_buffer_start; }
-    size_t GetIntPosition() const { return m_buffer_pos - m_buffer_start; }
+
+    size_t GetBufferSize() const
+    {
+        return static_cast<size_t>(m_buffer_end - m_buffer_start);
+    }
+
+    size_t GetIntPosition() const
+    {
+        return static_cast<size_t>(m_buffer_pos - m_buffer_start);
+    }
+
     void SetIntPosition(size_t pos) { m_buffer_pos = m_buffer_start + pos; }
-    size_t GetLastAccess() const { return m_buffer_end - m_buffer_start; }
-    size_t GetBytesLeft() const { return m_buffer_end - m_buffer_pos; }
+
+    size_t GetLastAccess() const
+    {
+        return static_cast<size_t>(m_buffer_end - m_buffer_start);
+    }
+
+    size_t GetBytesLeft() const
+    {
+        return static_cast<size_t>(m_buffer_end - m_buffer_pos);
+    }
 
     void Fixed(bool fixed) { m_fixed = fixed; }
     void Flushable(bool f) { m_flushable = f; }

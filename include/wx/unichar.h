@@ -39,10 +39,10 @@ public:
     // Create the character from 8bit character value encoded in the current
     // locale's charset.
     wxUniChar(char c) { m_value = From8bit(c); }
-    wxUniChar(unsigned char c) { m_value = From8bit((char)c); }
+    wxUniChar(unsigned char c) { m_value = From8bit(static_cast<char>(c)); }
 
 #define wxUNICHAR_DEFINE_CTOR(type) \
-    wxUniChar(type c) { m_value = (value_type)c; }
+    wxUniChar(type c) { m_value = static_cast<value_type>(c); }
     wxDO_FOR_INT_TYPES(wxUNICHAR_DEFINE_CTOR)
 #undef wxUNICHAR_DEFINE_CTOR
 
@@ -124,10 +124,13 @@ public:
     // able to pass wxUniChars to various standard narrow and wide character
     // functions
     operator char() const { return To8bit(m_value); }
-    operator unsigned char() const { return (unsigned char)To8bit(m_value); }
+    operator unsigned char() const
+    {
+        return static_cast<unsigned char>(To8bit(m_value));
+    }
 
 #define wxUNICHAR_DEFINE_OPERATOR_PAREN(type) \
-    operator type() const { return (type)m_value; }
+    operator type() const { return static_cast<type>(m_value); }
     wxDO_FOR_INT_TYPES(wxUNICHAR_DEFINE_OPERATOR_PAREN)
 #undef wxUNICHAR_DEFINE_OPERATOR_PAREN
 
@@ -137,43 +140,78 @@ public:
     // be ambiguous (there are all these int types conversions...). (And adding
     // operator unspecified_bool_type() would only makes the ambiguity worse.)
     operator bool() const { return m_value != 0; }
-    bool operator!() const { return !((bool)*this); }
+    bool operator!() const { return !this->operator bool(); }
 
     // And this one is needed by some (not all, but not using ifdefs makes the
     // code easier) compilers to parse "str[0] && *p" successfully
-    bool operator&&(bool v) const { return (bool)*this && v; }
+    bool operator&&(bool v) const { return this->operator bool() && v; }
 
     // Assignment operators:
     wxUniChar& operator=(const wxUniCharRef& c);
     wxUniChar& operator=(char c) { m_value = From8bit(c); return *this; }
-    wxUniChar& operator=(unsigned char c) { m_value = From8bit((char)c); return *this; }
+    wxUniChar& operator=(unsigned char c)
+    {
+        m_value = From8bit(static_cast<char>(c));
+        return *this;
+    }
 
 #define wxUNICHAR_DEFINE_OPERATOR_EQUAL(type) \
-    wxUniChar& operator=(type c) { m_value = (value_type)c; return *this; }
-    wxDO_FOR_INT_TYPES(wxUNICHAR_DEFINE_OPERATOR_EQUAL)
+    wxUniChar &operator=(type c)              \
+    {                                         \
+        m_value = static_cast<value_type>(c); \
+        return *this;                         \
+    }
+wxDO_FOR_INT_TYPES(wxUNICHAR_DEFINE_OPERATOR_EQUAL)
 #undef wxUNICHAR_DEFINE_OPERATOR_EQUAL
 
     // Comparison operators:
-#define wxDEFINE_UNICHAR_CMP_WITH_INT(T, op) \
-    bool operator op(T c) const { return m_value op (value_type)c; }
+#define wxDEFINE_UNICHAR_CMP_WITH_INT(T, op)          \
+    bool operator op(T c) const                       \
+    {                                                 \
+        return m_value op static_cast<value_type>(c); \
+    }
 
     // define the given comparison operator for all the types
-#define wxDEFINE_UNICHAR_OPERATOR(op)                                         \
-    bool operator op(const wxUniChar& c) const { return m_value op c.m_value; }\
-    bool operator op(char c) const { return m_value op From8bit(c); }         \
-    bool operator op(unsigned char c) const { return m_value op From8bit((char)c); } \
+#define wxDEFINE_UNICHAR_OPERATOR(op)                     \
+    bool operator op(const wxUniChar &c) const            \
+    {                                                     \
+        return m_value op c.m_value;                      \
+    }                                                     \
+    bool operator op(char c) const                        \
+    {                                                     \
+        return m_value op From8bit(c);                    \
+    }                                                     \
+    bool operator op(unsigned char c) const               \
+    {                                                     \
+        return m_value op From8bit(static_cast<char>(c)); \
+    }                                                     \
     wxDO_FOR_INT_TYPES_1(wxDEFINE_UNICHAR_CMP_WITH_INT, op)
 
-    wxFOR_ALL_COMPARISONS(wxDEFINE_UNICHAR_OPERATOR)
+wxFOR_ALL_COMPARISONS(wxDEFINE_UNICHAR_OPERATOR)
 
 #undef wxDEFINE_UNICHAR_OPERATOR
 #undef wxDEFINE_UNCHAR_CMP_WITH_INT
 
     // this is needed for expressions like 'Z'-c
-    int operator-(const wxUniChar& c) const { return m_value - c.m_value; }
-    int operator-(char c) const { return m_value - From8bit(c); }
-    int operator-(unsigned char c) const { return m_value - From8bit((char)c); }
-    int operator-(wchar_t c) const { return m_value - (value_type)c; }
+    int operator-(const wxUniChar& c) const
+    {
+        return static_cast<int>(m_value - c.m_value);
+    }
+
+    int operator-(char c) const
+    {
+        return static_cast<int>(m_value - From8bit(c));
+    }
+
+    int operator-(unsigned char c) const
+    {
+        return static_cast<int>(m_value - From8bit(static_cast<char>(c)));
+    }
+
+    int operator-(wchar_t c) const
+    {
+        return static_cast<int>(m_value - static_cast<value_type>(c));
+    }
 
 
 private:
@@ -182,8 +220,8 @@ private:
     static value_type From8bit(char c)
     {
 #if wxUSE_UNICODE
-        if ( (unsigned char)c < 0x80 )
-            return c;
+        if ( static_cast<unsigned char>(c) < 0x80 )
+            return static_cast<value_type>(c);
 
         return FromHi8bit(c);
 #else
@@ -283,7 +321,7 @@ public:
 #undef wxUNICHAR_REF_DEFINE_OPERATOR_PAREN
 
     // see wxUniChar::operator bool etc. for explanation
-    operator bool() const { return (bool)UniChar(); }
+    operator bool() const { return !!UniChar(); }
     bool operator!() const { return !UniChar(); }
     bool operator&&(bool v) const { return UniChar() && v; }
 

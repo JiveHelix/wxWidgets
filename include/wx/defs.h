@@ -733,7 +733,12 @@ typedef short int WXTYPE;
 
 /* the default value for some length parameters meaning that the string is */
 /* NUL-terminated */
+#ifdef __cplusplus
+#include <limits>
+#define wxNO_LEN (std::numeric_limits<size_t>::max())
+#else
 #define wxNO_LEN ((size_t)-1)
+#endif
 
 /*  ---------------------------------------------------------------------------- */
 /*  macros dealing with comparison operators */

@@ -200,7 +200,7 @@ public:
                                  unsigned char g,
                                  unsigned char b)
     {
-        return (r << 16) | (g << 8) | b;
+        return static_cast<unsigned long>((r << 16) | (g << 8) | b);
     }
 
     // find first colour that is not used in the image and has higher
@@ -503,7 +503,8 @@ public:
     int GetOptionInt(const wxString& name) const;
     bool HasOption(const wxString& name) const;
 
-    unsigned long CountColours( unsigned long stopafter = (unsigned long) -1 ) const;
+    unsigned long CountColours(
+        unsigned long stopafter = static_cast<unsigned long>(-1)) const;
 
     // Computes the histogram of the image and fills a hash table, indexed
     // with integer keys built as 0xRRGGBB, containing wxImageHistogramEntry

@@ -192,10 +192,15 @@ public:
 
     void* GetNativeBitmap() const;
 
-    const wxGraphicsBitmapData* GetBitmapData() const
-    { return (const wxGraphicsBitmapData*) GetRefData(); }
-    wxGraphicsBitmapData* GetBitmapData()
-    { return (wxGraphicsBitmapData*) GetRefData(); }
+    const wxGraphicsBitmapData *GetBitmapData() const
+    {
+        return reinterpret_cast<const wxGraphicsBitmapData *>(GetRefData());
+    }
+
+    wxGraphicsBitmapData *GetBitmapData()
+    {
+        return reinterpret_cast<wxGraphicsBitmapData *>(GetRefData());
+    }
 
 private:
     wxDECLARE_DYNAMIC_CLASS(wxGraphicsBitmap);
@@ -258,10 +263,15 @@ public:
     // returns the native representation
     virtual void * GetNativeMatrix() const;
 
-    const wxGraphicsMatrixData* GetMatrixData() const
-    { return (const wxGraphicsMatrixData*) GetRefData(); }
-    wxGraphicsMatrixData* GetMatrixData()
-    { return (wxGraphicsMatrixData*) GetRefData(); }
+    const wxGraphicsMatrixData *GetMatrixData() const
+    {
+        return reinterpret_cast<const wxGraphicsMatrixData *>(GetRefData());
+    }
+
+    wxGraphicsMatrixData *GetMatrixData()
+    {
+        return reinterpret_cast<wxGraphicsMatrixData *>(GetRefData());
+    }
 
 private:
     wxDECLARE_DYNAMIC_CLASS(wxGraphicsMatrix);
@@ -539,10 +549,15 @@ public:
     virtual bool Contains( wxDouble x, wxDouble y, wxPolygonFillMode fillStyle = wxODDEVEN_RULE)const;
     bool Contains( const wxPoint2DDouble& c, wxPolygonFillMode fillStyle = wxODDEVEN_RULE)const;
 
-    const wxGraphicsPathData* GetPathData() const
-    { return (const wxGraphicsPathData*) GetRefData(); }
-    wxGraphicsPathData* GetPathData()
-    { return (wxGraphicsPathData*) GetRefData(); }
+    const wxGraphicsPathData *GetPathData() const
+    {
+        return reinterpret_cast<const wxGraphicsPathData *>(GetRefData());
+    }
+
+    wxGraphicsPathData *GetPathData()
+    {
+        return reinterpret_cast<wxGraphicsPathData *>(GetRefData());
+    }
 
 private:
     wxDECLARE_DYNAMIC_CLASS(wxGraphicsPath);

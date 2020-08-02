@@ -133,14 +133,14 @@ inline void wxPoint2DInt::GetRounded( wxInt32 *x , wxInt32 *y ) const
 inline wxDouble wxPoint2DInt::GetVectorLength() const
 {
     // cast needed MIPSpro compiler under SGI
-    return sqrt( (wxDouble)(m_x)*(m_x) + (wxDouble)(m_y)*(m_y) );
+    return sqrt( static_cast<wxDouble>((m_x)*(m_x)) + static_cast<wxDouble>((m_y)*(m_y)) );
 }
 
 inline void wxPoint2DInt::SetVectorLength( wxDouble length )
 {
     wxDouble before = GetVectorLength();
-    m_x = (wxInt32)(m_x * length / before);
-    m_y = (wxInt32)(m_y * length / before);
+    m_x = static_cast<wxInt32>(m_x * length / before);
+    m_y = static_cast<wxInt32>(m_y * length / before);
 }
 
 inline void wxPoint2DInt::Normalize()
@@ -155,8 +155,8 @@ inline wxDouble wxPoint2DInt::GetDistance( const wxPoint2DInt &pt ) const
 
 inline wxDouble wxPoint2DInt::GetDistanceSquare( const wxPoint2DInt &pt ) const
 {
-    return ( ((wxDouble)pt.m_x-m_x)*((wxDouble)pt.m_x-m_x) +
-             ((wxDouble)pt.m_y-m_y)*((wxDouble)pt.m_y-m_y) );
+    return ( (static_cast<wxDouble>(pt.m_x)-m_x)*(static_cast<wxDouble>(pt.m_x)-m_x) +
+             (static_cast<wxDouble>(pt.m_y)-m_y)*(static_cast<wxDouble>(pt.m_y)-m_y) );
 }
 
 inline wxInt32 wxPoint2DInt::GetDotProduct( const wxPoint2DInt &vec ) const
@@ -290,9 +290,9 @@ public :
     inline wxPoint2DDouble( wxDouble x , wxDouble y );
     inline wxPoint2DDouble( const wxPoint2DDouble &pt );
     wxPoint2DDouble( const wxPoint2DInt &pt )
-        { m_x = (wxDouble) pt.m_x ; m_y = (wxDouble) pt.m_y ; }
+        { m_x = static_cast<wxDouble>( pt.m_x ); m_y = static_cast<wxDouble>(pt.m_y) ; }
     wxPoint2DDouble( const wxPoint &pt )
-        { m_x = (wxDouble) pt.x ; m_y = (wxDouble) pt.y ; }
+        { m_x = static_cast<wxDouble>(pt.x) ; m_y = static_cast<wxDouble>(pt.y); }
 
     // two different conversions to integers, floor and rounding
     inline void GetFloor( wxInt32 *x , wxInt32 *y ) const;
@@ -359,16 +359,16 @@ inline wxPoint2DDouble::wxPoint2DDouble( const wxPoint2DDouble &pt )
     m_y = pt.m_y;
 }
 
-inline void wxPoint2DDouble::GetFloor( wxInt32 *x , wxInt32 *y ) const
+inline void wxPoint2DDouble::GetFloor(wxInt32 *x, wxInt32 *y) const
 {
-    *x = (wxInt32) floor( m_x );
-    *y = (wxInt32) floor( m_y );
+    *x = static_cast<wxInt32>(floor(m_x));
+    *y = static_cast<wxInt32>(floor(m_y));
 }
 
-inline void wxPoint2DDouble::GetRounded( wxInt32 *x , wxInt32 *y ) const
+inline void wxPoint2DDouble::GetRounded(wxInt32 *x, wxInt32 *y) const
 {
-    *x = (wxInt32) floor( m_x + 0.5 );
-    *y = (wxInt32) floor( m_y + 0.5);
+    *x = static_cast<wxInt32>(floor(m_x + 0.5));
+    *y = static_cast<wxInt32>(floor(m_y + 0.5));
 }
 
 inline wxDouble wxPoint2DDouble::GetVectorLength() const
@@ -533,7 +533,7 @@ public:
     wxPoint2DDouble GetPosition() const
         { return wxPoint2DDouble(m_x, m_y); }
     wxSize GetSize() const
-        { return wxSize((int) m_width, (int) m_height); }
+        { return wxSize(static_cast<int>(m_width), static_cast<int>(m_height)); }
 
     // for the edge and corner accessors there are two setters counterparts, the Set.. functions keep the other corners at their
         // position whenever sensible, the Move.. functions keep the size of the rect and move the other corners appropriately
@@ -582,7 +582,7 @@ public:
     inline void MoveCentreTo( const wxPoint2DDouble &pt )
         { m_x += pt.m_x - (m_x+m_width/2); m_y += pt.m_y -(m_y+m_height/2); }
     inline wxOutCode GetOutCode( const wxPoint2DDouble &pt ) const
-        { return (wxOutCode) (( ( pt.m_x < m_x ) ? wxOutLeft : 0 ) +
+        { return static_cast<wxOutCode> (( ( pt.m_x < m_x ) ? wxOutLeft : 0 ) +
                      ( ( pt.m_x > m_x + m_width ) ? wxOutRight : 0 ) +
                      ( ( pt.m_y < m_y ) ? wxOutTop : 0 )  +
                      ( ( pt.m_y > m_y + m_height ) ? wxOutBottom : 0 )); }
@@ -626,9 +626,17 @@ public:
 
     inline void Scale( wxDouble f )
         { m_x *= f; m_y *= f; m_width *= f; m_height *= f;}
-    inline void Scale( wxInt32 num , wxInt32 denum )
-        { m_x *= ((wxDouble)num)/((wxDouble)denum); m_y *= ((wxDouble)num)/((wxDouble)denum);
-                m_width *= ((wxDouble)num)/((wxDouble)denum); m_height *= ((wxDouble)num)/((wxDouble)denum);}
+
+    inline void Scale(wxInt32 numerator, wxInt32 denominator)
+    {
+        wxDouble factor = static_cast<wxDouble>(numerator)
+            / static_cast<wxDouble>(denominator);
+
+        m_x *= factor;
+        m_y *= factor;
+        m_width *= factor;
+        m_height *= factor;
+    }
 
     inline bool operator == (const wxRect2DDouble& rect) const
         { return wxIsSameDouble(m_x, rect.m_x) && wxIsSameDouble(m_y, rect.m_y) && HaveEqualSize(rect); }
@@ -693,7 +701,7 @@ public:
         inline void SetCentre( const wxPoint2DInt &pt ) { MoveCentreTo( pt ); }    // since this is impossible without moving...
         inline void MoveCentreTo( const wxPoint2DInt &pt ) { m_x += pt.m_x - (m_x+m_width/2); m_y += pt.m_y -(m_y+m_height/2); }
         inline wxOutCode GetOutCode( const wxPoint2DInt &pt ) const
-            { return (wxOutCode) (( ( pt.m_x < m_x ) ? wxOutLeft : 0 ) +
+            { return static_cast<wxOutCode> (( ( pt.m_x < m_x ) ? wxOutLeft : 0 ) +
                      ( ( pt.m_x >= m_x + m_width ) ? wxOutRight : 0 ) +
                      ( ( pt.m_y < m_y ) ? wxOutTop : 0 )  +
                      ( ( pt.m_y >= m_y + m_height ) ? wxOutBottom : 0 )); }
@@ -727,9 +735,14 @@ public:
         inline wxRect2DInt CreateUnion( const wxRect2DInt &otherRect ) const { wxRect2DInt result; Union( *this , otherRect , &result); return result; }
 
         inline void Scale( wxInt32 f ) { m_x *= f; m_y *= f; m_width *= f; m_height *= f;}
-        inline void Scale( wxInt32 num , wxInt32 denum )
-            { m_x *= ((wxInt32)num)/((wxInt32)denum); m_y *= ((wxInt32)num)/((wxInt32)denum);
-                m_width *= ((wxInt32)num)/((wxInt32)denum); m_height *= ((wxInt32)num)/((wxInt32)denum);}
+
+        inline void Scale(wxInt32 numerator, wxInt32 denominator)
+        {
+            m_x = m_x * numerator / denominator;
+            m_y = m_y * numerator / denominator;
+            m_width = m_width * numerator / denominator;
+            m_height = m_height * numerator / denominator;
+        }
 
        wxRect2DInt& operator = (const wxRect2DInt& rect);
        bool operator == (const wxRect2DInt& rect) const;

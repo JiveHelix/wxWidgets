@@ -69,7 +69,7 @@ struct WXDLLIMPEXP_BASE wxStringOperationsWchar
     static SingleCharBuffer EncodeChar(const wxUniChar& ch)
     {
         SingleCharBuffer buf;
-        buf.data[0] = (wxChar)ch;
+        buf.data[0] = static_cast<wxChar>(ch);
         buf.data[1] = 0;
         return buf;
     }

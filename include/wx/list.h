@@ -520,7 +520,7 @@ protected:
     // operations
         // append to end of list
     wxNodeBase *Prepend(void *object)
-        { return (wxNodeBase *)wxListBase::Insert(object); }
+        { return wxListBase::Insert(object); }
         // append to beginning of list
     wxNodeBase *Append(void *object);
         // insert a new item at the beginning of the list
@@ -648,12 +648,12 @@ private:
             : wxNodeBase(list, previous, next, data, key) { }               \
                                                                             \
         nodetype *GetNext() const                                           \
-            { return (nodetype *)wxNodeBase::GetNext(); }                   \
+            { return dynamic_cast<nodetype *>(wxNodeBase::GetNext()); }                   \
         nodetype *GetPrevious() const                                       \
-            { return (nodetype *)wxNodeBase::GetPrevious(); }               \
+            { return dynamic_cast<nodetype *>(wxNodeBase::GetPrevious()); }               \
                                                                             \
         T *GetData() const                                                  \
-            { return (T *)wxNodeBase::GetData(); }                          \
+            { return static_cast<T *>(wxNodeBase::GetData()); }                          \
         void SetData(T *data)                                               \
             { wxNodeBase::SetData(data); }                                  \
                                                                             \
@@ -688,36 +688,36 @@ private:
             { if (&list != this) Assign(list); return *this; }              \
                                                                             \
         nodetype *GetFirst() const                                          \
-            { return (nodetype *)wxListBase::GetFirst(); }                  \
+            { return dynamic_cast<nodetype *>(wxListBase::GetFirst()); }                  \
         nodetype *GetLast() const                                           \
-            { return (nodetype *)wxListBase::GetLast(); }                   \
+            { return dynamic_cast<nodetype *>(wxListBase::GetLast()); }                   \
                                                                             \
         nodetype *Item(size_t index) const                                  \
-            { return (nodetype *)wxListBase::Item(index); }                 \
+            { return dynamic_cast<nodetype *>(wxListBase::Item(index)); }                 \
                                                                             \
         T *operator[](size_t index) const                                   \
         {                                                                   \
             nodetype *node = Item(index);                                   \
-            return node ? (T*)(node->GetData()) : NULL;                     \
+            return node ? static_cast<T*>(node->GetData()) : NULL;                     \
         }                                                                   \
                                                                             \
         nodetype *Append(Tbase *object)                                     \
-            { return (nodetype *)wxListBase::Append(object); }              \
+            { return dynamic_cast<nodetype *>(wxListBase::Append(object)); }              \
         nodetype *Insert(Tbase *object)                                     \
-            { return (nodetype *)Insert(static_cast<nodetype *>(NULL),      \
-                                        object); }                          \
+            { return dynamic_cast<nodetype *>(Insert(static_cast<nodetype *>(NULL),      \
+                                        object)); }                          \
         nodetype *Insert(size_t pos, Tbase *object)                         \
-            { return (nodetype *)wxListBase::Insert(pos, object); }         \
+            { return dynamic_cast<nodetype *>(wxListBase::Insert(pos, object)); }         \
         nodetype *Insert(nodetype *prev, Tbase *object)                     \
-            { return (nodetype *)wxListBase::Insert(prev, object); }        \
+            { return dynamic_cast<nodetype *>(wxListBase::Insert(prev, object)); }        \
                                                                             \
         nodetype *Append(long key, void *object)                            \
-            { return (nodetype *)wxListBase::Append(key, object); }         \
+            { return dynamic_cast<nodetype *>(wxListBase::Append(key, object)); }         \
         nodetype *Append(const wxChar *key, void *object)                   \
-            { return (nodetype *)wxListBase::Append(key, object); }         \
+            { return dynamic_cast<nodetype *>(wxListBase::Append(key, object)); }         \
                                                                             \
         nodetype *DetachNode(nodetype *node)                                \
-            { return (nodetype *)wxListBase::DetachNode(node); }            \
+            { return dynamic_cast<nodetype *>(wxListBase::DetachNode(node)); }            \
         bool DeleteNode(nodetype *node)                                     \
             { return wxListBase::DeleteNode(node); }                        \
         bool DeleteObject(Tbase *object)                                    \
@@ -726,10 +726,10 @@ private:
             { DeleteNode(it); }                                             \
                                                                             \
         nodetype *Find(const Tbase *object) const                           \
-            { return (nodetype *)wxListBase::Find(object); }                \
+            { return dynamic_cast<nodetype *>(wxListBase::Find(object)); }                \
                                                                             \
         virtual nodetype *Find(const wxListKey& key) const                  \
-            { return (nodetype *)wxListBase::Find(key); }                   \
+            { return dynamic_cast<nodetype *>(wxListBase::Find(key)); }                   \
                                                                             \
         bool Member(const Tbase *object) const                              \
             { return Find(object) != NULL; }                                \
@@ -740,7 +740,7 @@ private:
         void Sort(wxSortCompareFunction func)                               \
             { wxListBase::Sort(func); }                                     \
         void Sort(wxSortFuncFor_##name func)                                \
-            { Sort((wxSortCompareFunction)func); }                          \
+            { Sort(reinterpret_cast<wxSortCompareFunction>(func)); }                          \
                                                                             \
     protected:                                                              \
         virtual wxNodeBase *CreateNode(wxNodeBase *prev, wxNodeBase *next,  \
@@ -749,8 +749,8 @@ private:
                                wxOVERRIDE                                   \
             {                                                               \
                 return new nodetype(this,                                   \
-                                    (nodetype *)prev, (nodetype *)next,     \
-                                    (T *)data, key);                        \
+                                    dynamic_cast<nodetype *>(prev), dynamic_cast<nodetype *>(next),     \
+                                    static_cast<T *>(data), key);                        \
             }                                                               \
         /* STL interface */                                                 \
     public:                                                                 \
@@ -784,7 +784,7 @@ private:
             iterator(Node* node, Node* init) : m_node(node), m_init(init) {}\
             iterator() : m_node(NULL), m_init(NULL) { }                     \
             reference_type operator*() const                                \
-                { return *(pointer_type)m_node->GetDataPtr(); }             \
+                { return *reinterpret_cast<pointer_type>(m_node->GetDataPtr()); }             \
             ptrop                                                           \
             itor& operator++()                                              \
             {                                                               \
@@ -838,7 +838,7 @@ private:
             const_iterator(const iterator& it)                              \
                 : m_node(it.m_node), m_init(it.m_init) { }                  \
             reference_type operator*() const                                \
-                { return *(pointer_type)m_node->GetDataPtr(); }             \
+                { return *reinterpret_cast<pointer_type>(m_node->GetDataPtr()); }             \
             ptrop                                                           \
             itor& operator++()                                              \
             {                                                               \
@@ -890,7 +890,7 @@ private:
                 : m_node(node), m_init(init) { }                            \
             reverse_iterator() : m_node(NULL), m_init(NULL) { }             \
             reference_type operator*() const                                \
-                { return *(pointer_type)m_node->GetDataPtr(); }             \
+                { return *reinterpret_cast<pointer_type>(m_node->GetDataPtr()); }             \
             ptrop                                                           \
             itor& operator++()                                              \
                 { m_node = m_node->GetPrevious(); return *this; }           \
@@ -932,7 +932,7 @@ private:
             const_reverse_iterator(const reverse_iterator& it)              \
                 : m_node(it.m_node), m_init(it.m_init) { }                  \
             reference_type operator*() const                                \
-                { return *(pointer_type)m_node->GetDataPtr(); }             \
+                { return *reinterpret_cast<pointer_type>(m_node->GetDataPtr()); }             \
             ptrop                                                           \
             itor& operator++()                                              \
                 { m_node = m_node->GetPrevious(); return *this; }           \
@@ -983,28 +983,28 @@ private:
         reference back() { iterator tmp = end(); return *--tmp; }           \
         const_reference back() const { const_iterator tmp = end(); return *--tmp; }\
         void push_front(const_reference v = value_type())                   \
-            { Insert(GetFirst(), (const_base_reference)v); }                \
+            { Insert(GetFirst(), reinterpret_cast<const_base_reference>(v)); }                \
         void pop_front() { DeleteNode(GetFirst()); }                        \
         void push_back(const_reference v = value_type())                    \
-            { Append((const_base_reference)v); }                            \
+            { Append(reinterpret_cast<const_base_reference>(v)); }                            \
         void pop_back() { DeleteNode(GetLast()); }                          \
         void assign(const_iterator first, const const_iterator& last)       \
         {                                                                   \
             clear();                                                        \
             for(; first != last; ++first)                                   \
-                Append((const_base_reference)*first);                       \
+                Append(reinterpret_cast<const_base_reference>(*first));                       \
         }                                                                   \
         void assign(size_type n, const_reference v = value_type())          \
         {                                                                   \
             clear();                                                        \
             for(size_type i = 0; i < n; ++i)                                \
-                Append((const_base_reference)v);                            \
+                Append(reinterpret_cast<const_base_reference>(v));                            \
         }                                                                   \
         iterator insert(const iterator& it, const_reference v)              \
         {                                                                   \
             if ( it == end() )                                              \
             {                                                               \
-                Append((const_base_reference)v);                            \
+                Append(reinterpret_cast<const_base_reference>(v));                            \
                 /*                                                          \
                     note that this is the new end(), the old one was        \
                     invalidated by the Append() call, and this is why we    \
@@ -1015,7 +1015,7 @@ private:
             }                                                               \
             else                                                            \
             {                                                               \
-                Insert(it.m_node, (const_base_reference)v);                 \
+                Insert(it.m_node, reinterpret_cast<const_base_reference>(v));                 \
                 iterator itins(it);                                         \
                 return --itins;                                             \
             }                                                               \
@@ -1058,7 +1058,7 @@ private:
             }                                                               \
         }                                                                   \
         void remove(const_reference v)                                      \
-            { DeleteObject((const_base_reference)v); }                      \
+            { DeleteObject(reinterpret_cast<const_base_reference>(v)); }                      \
         void reverse()                                                      \
             { Reverse(); }                                                  \
      /* void swap(name& l)                                                  \
@@ -1073,7 +1073,7 @@ private:
 
 #define WX_LIST_PTROP                                                       \
             pointer_type operator->() const                                 \
-                { return (pointer_type)m_node->GetDataPtr(); }
+                { return static_cast<pointer_type>(m_node->GetDataPtr()); }
 #define WX_LIST_PTROP_NONE
 
 #define WX_DECLARE_LIST_3(T, Tbase, name, nodetype, classexp)               \
@@ -1138,18 +1138,44 @@ private:
 // wxNodeBase deprecated methods
 // ----------------------------------------------------------------------------
 
-inline wxNode *wxNodeBase::Next() const { return (wxNode *)GetNext(); }
-inline wxNode *wxNodeBase::Previous() const { return (wxNode *)GetPrevious(); }
-inline wxObject *wxNodeBase::Data() const { return (wxObject *)GetData(); }
+inline wxNode *wxNodeBase::Next() const
+{
+    return reinterpret_cast<wxNode *>(GetNext());
+}
+
+inline wxNode *wxNodeBase::Previous() const
+{
+    return reinterpret_cast<wxNode *>(GetPrevious());
+}
+
+inline wxObject *wxNodeBase::Data() const
+{
+    return static_cast<wxObject *>(GetData());
+}
 
 // ----------------------------------------------------------------------------
 // wxListBase deprecated methods
 // ----------------------------------------------------------------------------
 
-inline int wxListBase::Number() const { return (int)GetCount(); }
-inline wxNode *wxListBase::First() const { return (wxNode *)GetFirst(); }
-inline wxNode *wxListBase::Last() const { return (wxNode *)GetLast(); }
-inline wxNode *wxListBase::Nth(size_t n) const { return (wxNode *)Item(n); }
+inline int wxListBase::Number() const
+{
+    return static_cast<int>(GetCount());
+}
+
+inline wxNode *wxListBase::First() const
+{
+    return reinterpret_cast<wxNode *>(GetFirst());
+}
+
+inline wxNode *wxListBase::Last() const
+{
+    return reinterpret_cast<wxNode *>(GetLast());
+}
+
+inline wxNode *wxListBase::Nth(size_t n) const
+{
+    return reinterpret_cast<wxNode *>(Item(n));
+}
 
 #endif
 

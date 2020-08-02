@@ -72,7 +72,7 @@ struct wxVectorMemOpsMovable
         { free(array); }
 
     static T* Realloc(T* old, size_t newCapacity, size_t WXUNUSED(occupiedSize))
-        { return (T*)realloc(old, newCapacity * sizeof(T)); }
+        { return static_cast<T*>(realloc(old, newCapacity * sizeof(T))); }
 
     static void MemmoveBackward(T* dest, T* source, size_t count)
         { memmove(dest, source, count * sizeof(T)); }
@@ -90,7 +90,7 @@ struct wxVectorMemOpsGeneric
 
     static T* Realloc(T* old, size_t newCapacity, size_t occupiedSize)
     {
-        T *mem = (T*)::operator new(newCapacity * sizeof(T));
+        T *mem = static_cast<T*>(::operator new(newCapacity * sizeof(T)));
         for ( size_t i = 0; i < occupiedSize; i++ )
         {
             ::new(mem + i) T(old[i]);
@@ -380,9 +380,11 @@ public:
         //
         // NB: casts to size_type are needed to suppress warnings about
         //     mixing enumeral and non-enumeral type in conditional expression
-        const size_type increment = m_size > ALLOC_INITIAL_SIZE
-                                     ? m_size
-                                     : (size_type)ALLOC_INITIAL_SIZE;
+        const size_type increment = 
+            (m_size > ALLOC_INITIAL_SIZE)
+            ? m_size
+            : static_cast<size_type>(ALLOC_INITIAL_SIZE);
+
         if ( m_capacity + increment > n )
             n = m_capacity + increment;
 

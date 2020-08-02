@@ -83,7 +83,7 @@ struct wxImplicitConversionType
     typedef typename wxIf
             <
                 // if T2 is "higher" type, convert to it
-                (int)(wxPrivate::TypeHierarchy<T1>::level) < (int)(wxPrivate::TypeHierarchy<T2>::level),
+                static_cast<int>(wxPrivate::TypeHierarchy<T1>::level) < static_cast<int>(wxPrivate::TypeHierarchy<T2>::level),
                 T2,
                 // otherwise use T1
                 T1

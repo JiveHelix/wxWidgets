@@ -682,13 +682,13 @@ public:
     // wxFileConfig::Flush() for example
     wxUmaskChanger(int umaskNew)
     {
-        m_umaskOld = umaskNew == -1 ? -1 : (int)umask((mode_t)umaskNew);
+        m_umaskOld = umaskNew == -1 ? -1 : static_cast<int>(umask(static_cast<mode_t>(umaskNew)));
     }
 
     ~wxUmaskChanger()
     {
         if ( m_umaskOld != -1 )
-            umask((mode_t)m_umaskOld);
+            umask(static_cast<mode_t>(m_umaskOld));
     }
 
 private:

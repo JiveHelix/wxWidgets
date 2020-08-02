@@ -133,7 +133,7 @@ public:
     // reference count.
     wxVariantData* GetData() const
     {
-        return (wxVariantData*) m_refData;
+        return static_cast<wxVariantData*>(m_refData);
     }
     void SetData(wxVariantData* data) ;
 

@@ -153,10 +153,14 @@ public:
     virtual bool SaveFile(const wxString& name, wxBitmapType type, const wxPalette *cmap = NULL) const wxOVERRIDE;
 
     const wxBitmapRefData *GetBitmapData() const
-        { return (const wxBitmapRefData *)m_refData; }
+    {
+        return reinterpret_cast<const wxBitmapRefData *>(m_refData);
+    }
 
     wxBitmapRefData *GetBitmapData()
-        { return (wxBitmapRefData *)m_refData; }
+    {
+        return reinterpret_cast<wxBitmapRefData *>(m_refData);
+    }
 
     // copies the contents and mask of the given (colour) icon to the bitmap
     virtual bool CopyFromIcon(const wxIcon& icon) wxOVERRIDE;

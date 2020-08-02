@@ -109,9 +109,9 @@ public:
     {
         // we don't need to know sizeof(long) here because we assume that the three
         // least significant bytes contain the R, G and B values
-        Set((ChannelType)(0xFF & colRGB),
-            (ChannelType)(0xFF & (colRGB >> 8)),
-            (ChannelType)(0xFF & (colRGB >> 16)));
+        Set(static_cast<ChannelType>(0xFF & colRGB),
+            static_cast<ChannelType>(0xFF & (colRGB >> 8)),
+            static_cast<ChannelType>(0xFF & (colRGB >> 16)));
     }
 
 
@@ -133,24 +133,29 @@ public:
 
     void SetRGB(wxUint32 colRGB)
     {
-        Set((ChannelType)(0xFF & colRGB),
-            (ChannelType)(0xFF & (colRGB >> 8)),
-            (ChannelType)(0xFF & (colRGB >> 16)));
+        Set(static_cast<ChannelType>(0xFF & colRGB),
+            static_cast<ChannelType>(0xFF & (colRGB >> 8)),
+            static_cast<ChannelType>(0xFF & (colRGB >> 16)));
     }
 
     void SetRGBA(wxUint32 colRGBA)
     {
-        Set((ChannelType)(0xFF & colRGBA),
-            (ChannelType)(0xFF & (colRGBA >> 8)),
-            (ChannelType)(0xFF & (colRGBA >> 16)),
-            (ChannelType)(0xFF & (colRGBA >> 24)));
+        Set(static_cast<ChannelType>(0xFF & colRGBA),
+            static_cast<ChannelType>(0xFF & (colRGBA >> 8)),
+            static_cast<ChannelType>(0xFF & (colRGBA >> 16)),
+            static_cast<ChannelType>(0xFF & (colRGBA >> 24)));
     }
 
     wxUint32 GetRGB() const
-        { return Red() | (Green() << 8) | (Blue() << 16); }
+    {
+        return static_cast<wxUint32>(Red() | (Green() << 8) | (Blue() << 16));
+    }
 
     wxUint32 GetRGBA() const
-        { return Red() | (Green() << 8) | (Blue() << 16) | (Alpha() << 24); }
+    {
+        return static_cast<wxUint32>(
+            Red() | (Green() << 8) | (Blue() << 16) | (Alpha() << 24));
+    }
 
 #if !wxCOLOUR_IS_GDIOBJECT
     virtual bool IsOk() const= 0;

@@ -136,13 +136,13 @@ inline bool wxIsNullDouble(double x) { return wxIsSameDouble(x, 0.); }
 
 inline int wxRound(double x)
 {
-    wxASSERT_MSG( x > (double)INT_MIN - 0.5 && x < (double)INT_MAX + 0.5,
+    wxASSERT_MSG( x > static_cast<double>(INT_MIN) - 0.5 && x < static_cast<double>(INT_MAX) + 0.5,
                   wxT("argument out of supported range") );
 
     #if defined(HAVE_ROUND)
         return int(round(x));
     #else
-        return (int)(x < 0 ? x - 0.5 : x + 0.5);
+        return static_cast<int>(x < 0 ? x - 0.5 : x + 0.5);
     #endif
 }
 

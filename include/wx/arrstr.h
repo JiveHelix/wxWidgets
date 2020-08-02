@@ -336,7 +336,7 @@ public:
   void assign(Iterator first, Iterator last)
   {
       clear();
-      reserve(std::distance(first, last));
+      reserve(static_cast<size_type>(std::distance(first, last)));
       for(; first != last; ++first)
           push_back(*first);
   }
@@ -354,17 +354,17 @@ public:
   const_iterator end() const { return begin() + GetCount(); }
   iterator erase(iterator first, iterator last)
   {
-      size_t idx = first - begin();
-      RemoveAt(idx, last - first);
+      size_t idx = static_cast<size_t>(first - begin());
+      RemoveAt(idx, static_cast<size_t>(last - first));
       return begin() + idx;
   }
   iterator erase(iterator it) { return erase(it, it + 1); }
   reference front() { return *begin(); }
   const_reference front() const { return *begin(); }
   void insert(iterator it, size_type n, const_reference v)
-    { Insert(v, it - begin(), n); }
+    { Insert(v, static_cast<size_t>(it - begin()), n); }
   iterator insert(iterator it, const_reference v = value_type())
-    { size_t idx = it - begin(); Insert(v, idx); return begin() + idx; }
+    { size_t idx = static_cast<size_t>(it - begin()); Insert(v, idx); return begin() + idx; }
   void insert(iterator it, const_iterator first, const_iterator last);
   size_type max_size() const { return INT_MAX; }
   void pop_back() { RemoveAt(GetCount() - 1); }

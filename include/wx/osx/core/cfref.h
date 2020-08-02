@@ -56,7 +56,7 @@ template <class Type>
 inline void wxCFRelease(Type *r)
 {
     if ( r != NULL )
-        ::CFRelease((CFTypeRef)r);
+        ::CFRelease(static_cast<CFTypeRef>(r));
 }
 
 /*! @function   wxCFAutorelease

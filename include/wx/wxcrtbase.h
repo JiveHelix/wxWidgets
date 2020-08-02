@@ -612,8 +612,8 @@ WXDLLIMPEXP_BASE size_t wxCRT_StrftimeW(wchar_t *s, size_t max,
 #else /* !__GLIBC__ */
     /* There is a bug in MSVC RTL: toxxx() functions don't do anything
        with signed chars < 0, so "fix" it here. */
-    #define wxCRT_TolowerW(c)   towlower((wxUChar)(wxChar)(c))
-    #define wxCRT_ToupperW(c)   towupper((wxUChar)(wxChar)(c))
+    #define wxCRT_TolowerW(c)   towlower(static_cast<wxUChar>(static_cast<wxChar>(c)))
+    #define wxCRT_ToupperW(c)   towupper(static_cast<wxUChar>(static_cast<wxChar>(c)))
 #endif /* __GLIBC__/!__GLIBC__ */
 
 /* The Android platform, as of 2014, only support most wide-char function with

@@ -383,17 +383,23 @@ inline wxSize operator*(int i, const wxSize& s)
 
 inline wxSize operator/(const wxSize& s, unsigned int i)
 {
-    return wxSize(s.x / i, s.y / i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxSize(s.x / arg, s.y / arg);
 }
 
 inline wxSize operator*(const wxSize& s, unsigned int i)
 {
-    return wxSize(s.x * i, s.y * i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxSize(s.x * arg, s.y * arg);
 }
 
 inline wxSize operator*(unsigned int i, const wxSize& s)
 {
-    return wxSize(s.x * i, s.y * i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxSize(s.x * arg, s.y * arg);
 }
 
 inline wxSize operator/(const wxSize& s, long i)
@@ -413,17 +419,23 @@ inline wxSize operator*(long i, const wxSize& s)
 
 inline wxSize operator/(const wxSize& s, unsigned long i)
 {
-    return wxSize(int(s.x / i), int(s.y / i));
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxSize(int(s.x / arg), int(s.y / arg));
 }
 
 inline wxSize operator*(const wxSize& s, unsigned long i)
 {
-    return wxSize(int(s.x * i), int(s.y * i));
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxSize(int(s.x * arg), int(s.y * arg));
 }
 
 inline wxSize operator*(unsigned long i, const wxSize& s)
 {
-    return wxSize(int(s.x * i), int(s.y * i));
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxSize(int(s.x * arg), int(s.y * arg));
 }
 
 inline wxSize operator*(const wxSize& s, double i)
@@ -502,17 +514,23 @@ inline wxRealPoint operator*(int i, const wxRealPoint& s)
 
 inline wxRealPoint operator/(const wxRealPoint& s, unsigned int i)
 {
-    return wxRealPoint(s.x / i, s.y / i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxRealPoint(s.x / arg, s.y / arg);
 }
 
 inline wxRealPoint operator*(const wxRealPoint& s, unsigned int i)
 {
-    return wxRealPoint(s.x * i, s.y * i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxRealPoint(s.x * arg, s.y * arg);
 }
 
 inline wxRealPoint operator*(unsigned int i, const wxRealPoint& s)
 {
-    return wxRealPoint(s.x * i, s.y * i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxRealPoint(s.x * arg, s.y * arg);
 }
 
 inline wxRealPoint operator/(const wxRealPoint& s, long i)
@@ -532,17 +550,23 @@ inline wxRealPoint operator*(long i, const wxRealPoint& s)
 
 inline wxRealPoint operator/(const wxRealPoint& s, unsigned long i)
 {
-    return wxRealPoint(s.x / i, s.y / i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxRealPoint(s.x / arg, s.y / arg);
 }
 
 inline wxRealPoint operator*(const wxRealPoint& s, unsigned long i)
 {
-    return wxRealPoint(s.x * i, s.y * i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxRealPoint(s.x * arg, s.y * arg);
 }
 
 inline wxRealPoint operator*(unsigned long i, const wxRealPoint& s)
 {
-    return wxRealPoint(s.x * i, s.y * i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxRealPoint(s.x * arg, s.y * arg);
 }
 
 inline wxRealPoint operator*(const wxRealPoint& s, double i)
@@ -657,17 +681,23 @@ inline wxPoint operator*(int i, const wxPoint& s)
 
 inline wxPoint operator/(const wxPoint& s, unsigned int i)
 {
-    return wxPoint(s.x / i, s.y / i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxPoint(s.x / arg, s.y / arg);
 }
 
 inline wxPoint operator*(const wxPoint& s, unsigned int i)
 {
-    return wxPoint(s.x * i, s.y * i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxPoint(s.x * arg, s.y * arg);
 }
 
 inline wxPoint operator*(unsigned int i, const wxPoint& s)
 {
-    return wxPoint(s.x * i, s.y * i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxPoint(s.x * arg, s.y * arg);
 }
 
 inline wxPoint operator/(const wxPoint& s, long i)
@@ -687,17 +717,23 @@ inline wxPoint operator*(long i, const wxPoint& s)
 
 inline wxPoint operator/(const wxPoint& s, unsigned long i)
 {
-    return wxPoint(s.x / i, s.y / i);
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxPoint(s.x / arg, s.y / arg);
 }
 
 inline wxPoint operator*(const wxPoint& s, unsigned long i)
 {
-    return wxPoint(int(s.x * i), int(s.y * i));
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxPoint(int(s.x * arg), int(s.y * arg));
 }
 
 inline wxPoint operator*(unsigned long i, const wxPoint& s)
 {
-    return wxPoint(int(s.x * i), int(s.y * i));
+    assert(i <= std::numeric_limits<int>::max());
+    int arg = static_cast<int>(i);
+    return wxPoint(int(s.x * arg), int(s.y * arg));
 }
 
 inline wxPoint operator*(const wxPoint& s, double i)
@@ -925,7 +961,7 @@ class WXDLLIMPEXP_CORE wxResourceCache: public wxList
 public:
     wxResourceCache() { }
 #if !wxUSE_STD_CONTAINERS
-    wxResourceCache(unsigned int keyType) : wxList(keyType) { }
+    wxResourceCache(unsigned int keyType) : wxList(static_cast<int>(keyType)) { }
 #endif
     virtual ~wxResourceCache();
 };

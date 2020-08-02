@@ -507,8 +507,16 @@ public:
         bool underlined = false,    // not underlined by default
         const wxString& face = wxEmptyString,              // facename
         wxFontEncoding encoding = wxFONTENCODING_DEFAULT)  // ISO8859-X, ...
-        { return New(pointSize, (wxFontFamily)family, (wxFontStyle)style,
-                     (wxFontWeight)weight, underlined, face, encoding); }
+    {
+        return New(
+            pointSize,
+            static_cast<wxFontFamily>(family),
+            static_cast<wxFontStyle>(style),
+            static_cast<wxFontWeight>(weight),
+            underlined,
+            face,
+            encoding);
+    }
 
     // from the font components
     wxDEPRECATED_MSG("use wxFONT{FAMILY,STYLE,WEIGHT}_XXX constants")
@@ -520,8 +528,16 @@ public:
         bool underlined = false,    // not underlined by default
         const wxString& face = wxEmptyString,              // facename
         wxFontEncoding encoding = wxFONTENCODING_DEFAULT)  // ISO8859-X, ...
-        { return New(pixelSize, (wxFontFamily)family, (wxFontStyle)style,
-                     (wxFontWeight)weight, underlined, face, encoding); }
+    {
+        return New(
+            pixelSize,
+            static_cast<wxFontFamily>(family),
+            static_cast<wxFontStyle>(style),
+            static_cast<wxFontWeight>(weight),
+            underlined,
+            face,
+            encoding);
+    }
 
 
 protected:
@@ -600,16 +616,16 @@ WXDLLIMPEXP_CORE bool wxFromString(const wxString& str, wxFontBase* font);
 #define wxDECLARE_COMMON_FONT_METHODS() \
     wxDEPRECATED_MSG("use wxFONTFAMILY_XXX constants") \
     void SetFamily(int family) \
-        { SetFamily((wxFontFamily)family); } \
+        { SetFamily(static_cast<wxFontFamily>(family)); } \
     wxDEPRECATED_MSG("use wxFONTSTYLE_XXX constants") \
     void SetStyle(int style) \
-        { SetStyle((wxFontStyle)style); } \
+        { SetStyle(static_cast<wxFontStyle>(style)); } \
     wxDEPRECATED_MSG("use wxFONTFAMILY_XXX constants") \
     void SetFamily(wxDeprecatedGUIConstants family) \
-        { SetFamily((wxFontFamily)family); } \
+        { SetFamily(static_cast<wxFontFamily>(family)); } \
     wxDEPRECATED_MSG("use wxFONTSTYLE_XXX constants") \
     void SetStyle(wxDeprecatedGUIConstants style) \
-        { SetStyle((wxFontStyle)style); } \
+        { SetStyle(static_cast<wxFontStyle>(style)); } \
  \
     /* functions for modifying font in place */ \
     wxFont& MakeBold(); \
@@ -664,8 +680,16 @@ public:
                               bool underline = false,
                               const wxString& face = wxEmptyString,
                               wxFontEncoding encoding = wxFONTENCODING_DEFAULT)
-        { return FindOrCreateFont(pointSize, (wxFontFamily)family, (wxFontStyle)style,
-                                  (wxFontWeight)weight, underline, face, encoding); }
+    {
+        return FindOrCreateFont(
+            pointSize,
+            static_cast<wxFontFamily>(family),
+            static_cast<wxFontStyle>(style),
+            static_cast<wxFontWeight>(weight),
+            underline,
+            face,
+            encoding);
+    }
 
     wxFont *FindOrCreateFont(const wxFontInfo& fontInfo)
         { return FindOrCreateFont(fontInfo.GetPointSize(), fontInfo.GetFamily(),

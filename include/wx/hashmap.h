@@ -114,7 +114,7 @@ protected:
 
     static void** AllocTable( size_t sz )
     {
-        return (void **)calloc(sz, sizeof(void*));
+        return static_cast<void **>(calloc(sz, sizeof(void*)));
     }
     static void FreeTable(void *table)
     {
@@ -233,13 +233,14 @@ public: \
     CLASSNAME( size_type sz = 10, const hasher& hfun = hasher(), \
                const key_equal& k_eq = key_equal(), \
                const key_extractor& k_ex = key_extractor() ) \
-        : m_tableBuckets( GetNextPrime( (unsigned long) sz ) ), \
+        : m_tableBuckets( GetNextPrime( static_cast<unsigned long>(sz) ) ), \
           m_items( 0 ), \
           m_hasher( hfun ), \
           m_equals( k_eq ), \
           m_getKey( k_ex ) \
     { \
-        m_table = (_wxHashTable_NodeBase**)AllocTable(m_tableBuckets); \
+        m_table = \
+            reinterpret_cast<_wxHashTable_NodeBase**>(AllocTable(m_tableBuckets)); \
     } \
  \
     CLASSNAME( const Self& ht ) \
@@ -308,7 +309,7 @@ public: \
         delete static_cast<Node*>(*node); \
         (*node) = temp; \
         if( SHOULD_SHRINK( m_tableBuckets, m_items ) ) \
-            ResizeTable( GetPreviousPrime( (unsigned long) m_tableBuckets ) - 1 ); \
+            ResizeTable( GetPreviousPrime( static_cast<unsigned long>( m_tableBuckets ) ) - 1 ); \
         return 1; \
     } \
  \
@@ -391,16 +392,16 @@ protected: \
  \
     void ResizeTable( size_t newSize ) \
     { \
-        newSize = GetNextPrime( (unsigned long)newSize ); \
+        newSize = GetNextPrime( static_cast<unsigned long>(newSize) ); \
         _wxHashTable_NodeBase** srcTable = m_table; \
         size_t srcBuckets = m_tableBuckets; \
-        m_table = (_wxHashTable_NodeBase**)AllocTable( newSize ); \
+        m_table = reinterpret_cast<_wxHashTable_NodeBase**>(AllocTable( newSize )); \
         m_tableBuckets = newSize; \
  \
         CopyHashTable( srcTable, srcBuckets, \
                        this, m_table, \
-                       (BucketFromNode)GetBucketForNode,\
-                       (ProcessNode)&DummyProcessNode ); \
+                       reinterpret_cast<BucketFromNode>(GetBucketForNode),\
+                       static_cast<ProcessNode>(&DummyProcessNode) ); \
         FreeTable(srcTable); \
     } \
  \
@@ -409,10 +410,10 @@ protected: \
     { \
         ResizeTable( ht.size() ); \
         CopyHashTable( ht.m_table, ht.m_tableBuckets, \
-                       (_wxHashTableBase2*)this, \
+                       static_cast<_wxHashTableBase2*>(this), \
                        m_table, \
-                       (BucketFromNode)GetBucketForNode, \
-                       (ProcessNode)CopyNode ); \
+                       reinterpret_cast<BucketFromNode>(GetBucketForNode), \
+                       reinterpret_cast<ProcessNode>(CopyNode) ); \
     } \
 };
 
@@ -517,11 +518,11 @@ public:
 struct WXDLLIMPEXP_BASE wxIntegerHash
 {
     wxIntegerHash() { }
-    unsigned long operator()( long x ) const { return (unsigned long)x; }
+    unsigned long operator()( long x ) const { return static_cast<unsigned long>(x); }
     unsigned long operator()( unsigned long x ) const { return x; }
-    unsigned long operator()( int x ) const { return (unsigned long)x; }
+    unsigned long operator()( int x ) const { return static_cast<unsigned long>(x); }
     unsigned long operator()( unsigned int x ) const { return x; }
-    unsigned long operator()( short x ) const { return (unsigned long)x; }
+    unsigned long operator()( short x ) const { return static_cast<unsigned long>(x); }
     unsigned long operator()( unsigned short x ) const { return x; }
 #ifdef wxHAS_LONG_LONG_T_DIFFERENT_FROM_LONG
     wxULongLong_t operator()( wxLongLong_t x ) const { return static_cast<wxULongLong_t>(x); }

@@ -87,12 +87,12 @@ WXDLLIMPEXP_BASE size_t wxWC2MB(char *buf, const wchar_t *psz, size_t n);
 
     inline wxChar* wxTmemcpy(wxChar* szOut, const wxChar* szIn, size_t len)
     {
-        return (wxChar*) memcpy(szOut, szIn, len * sizeof(wxChar));
+        return static_cast<wxChar*>(memcpy(szOut, szIn, len * sizeof(wxChar)));
     }
 
     inline wxChar* wxTmemmove(wxChar* szOut, const wxChar* szIn, size_t len)
     {
-        return (wxChar*) memmove(szOut, szIn, len * sizeof(wxChar));
+        return static_cast<wxChar*>(memmove(szOut, szIn, len * sizeof(wxChar)));
     }
 
     inline wxChar* wxTmemset(wxChar* szOut, wxChar cIn, size_t len)
@@ -114,11 +114,11 @@ inline char* wxTmemchr(const char* s, char c, size_t len)
 inline int wxTmemcmp(const char* sz1, const char* sz2, size_t len)
     { return memcmp(sz1, sz2, len); }
 inline char* wxTmemcpy(char* szOut, const char* szIn, size_t len)
-    { return (char*)memcpy(szOut, szIn, len); }
+    { return static_cast<char*>(memcpy(szOut, szIn, len)); }
 inline char* wxTmemmove(char* szOut, const char* szIn, size_t len)
-    { return (char*)memmove(szOut, szIn, len); }
+    { return static_cast<char*>(memmove(szOut, szIn, len)); }
 inline char* wxTmemset(char* szOut, char cIn, size_t len)
-    { return (char*)memset(szOut, cIn, len); }
+    { return static_cast<char*>(memset(szOut, cIn, len)); }
 
 
 // ============================================================================
@@ -561,9 +561,9 @@ inline int wxStrcoll_String(const wxString& s1, const T& s2)
     //     wc_str() even if wxUSE_UNICODE_UTF8; the (const wchar_t*) cast is
     //     there just as optimization to avoid going through
     //     wxStrcoll<wxScopedWCharBuffer>:
-    return wxStrcoll((const wchar_t*)s1.wc_str(), s2);
+    return wxStrcoll(static_cast<const wchar_t*>(s1.wc_str()), s2);
 #else
-    return wxStrcoll((const char*)s1.mb_str(), s2);
+    return wxStrcoll(static_cast<const char*>(s1.mb_str()), s2);
 #endif
 }
 
@@ -693,19 +693,19 @@ inline const wchar_t *wxStrrchr(const wchar_t *s, wchar_t c)
 inline const char *wxStrchr(const char *s, const wxUniChar& uc)
     { char c; return uc.GetAsChar(&c) ? wxCRT_StrchrA(s, c) : NULL; }
 inline const wchar_t *wxStrchr(const wchar_t *s, const wxUniChar& c)
-    { return wxCRT_StrchrW(s, (wchar_t)c); }
+    { return wxCRT_StrchrW(s, static_cast<wchar_t>(c)); }
 inline const char *wxStrrchr(const char *s, const wxUniChar& uc)
     { char c; return uc.GetAsChar(&c) ? wxCRT_StrrchrA(s, c) : NULL; }
 inline const wchar_t *wxStrrchr(const wchar_t *s, const wxUniChar& c)
-    { return wxCRT_StrrchrW(s, (wchar_t)c); }
+    { return wxCRT_StrrchrW(s, static_cast<wchar_t>(c)); }
 inline const char *wxStrchr(const char *s, const wxUniCharRef& uc)
     { char c; return uc.GetAsChar(&c) ? wxCRT_StrchrA(s, c) : NULL; }
 inline const wchar_t *wxStrchr(const wchar_t *s, const wxUniCharRef& c)
-    { return wxCRT_StrchrW(s, (wchar_t)c); }
+    { return wxCRT_StrchrW(s, static_cast<wchar_t>(c)); }
 inline const char *wxStrrchr(const char *s, const wxUniCharRef& uc)
     { char c; return uc.GetAsChar(&c) ? wxCRT_StrrchrA(s, c) : NULL; }
 inline const wchar_t *wxStrrchr(const wchar_t *s, const wxUniCharRef& c)
-    { return wxCRT_StrrchrW(s, (wchar_t)c); }
+    { return wxCRT_StrrchrW(s, static_cast<wchar_t>(c)); }
 template<typename T>
 inline const T* wxStrchr(const wxScopedCharTypeBuffer<T>& s, T c)
     { return wxStrchr(s.data(), c); }
@@ -714,27 +714,27 @@ inline const T* wxStrrchr(const wxScopedCharTypeBuffer<T>& s, T c)
     { return wxStrrchr(s.data(), c); }
 template<typename T>
 inline const T* wxStrchr(const wxScopedCharTypeBuffer<T>& s, const wxUniChar& c)
-    { return wxStrchr(s.data(), (T)c); }
+    { return wxStrchr(s.data(), static_cast<T>(c)); }
 template<typename T>
 inline const T* wxStrrchr(const wxScopedCharTypeBuffer<T>& s, const wxUniChar& c)
-    { return wxStrrchr(s.data(), (T)c); }
+    { return wxStrrchr(s.data(), static_cast<T>(c)); }
 template<typename T>
 inline const T* wxStrchr(const wxScopedCharTypeBuffer<T>& s, const wxUniCharRef& c)
-    { return wxStrchr(s.data(), (T)c); }
+    { return wxStrchr(s.data(), static_cast<T>(c)); }
 template<typename T>
 inline const T* wxStrrchr(const wxScopedCharTypeBuffer<T>& s, const wxUniCharRef& c)
-    { return wxStrrchr(s.data(), (T)c); }
+    { return wxStrrchr(s.data(), static_cast<T>(c)); }
 // these functions return char* pointer into the non-temporary conversion buffer
 // used by c_str()'s implicit conversion to char*, for ANSI build compatibility
 #ifndef wxNO_IMPLICIT_WXSTRING_ENCODING
 inline const char* wxStrchr(const wxString& s, char c)
-    { return wxCRT_StrchrA((const char*)s.c_str(), c); }
+    { return wxCRT_StrchrA(static_cast<const char *>(s.c_str()), c); }
 inline const char* wxStrrchr(const wxString& s, char c)
-    { return wxCRT_StrrchrA((const char*)s.c_str(), c); }
+    { return wxCRT_StrrchrA(static_cast<const char *>(s.c_str()), c); }
 inline const char* wxStrchr(const wxString& s, int c)
-    { return wxCRT_StrchrA((const char*)s.c_str(), c); }
+    { return wxCRT_StrchrA(static_cast<const char *>(s.c_str()), c); }
 inline const char* wxStrrchr(const wxString& s, int c)
-    { return wxCRT_StrrchrA((const char*)s.c_str(), c); }
+    { return wxCRT_StrrchrA(static_cast<const char *>(s.c_str()), c); }
 inline const char* wxStrchr(const wxString& s, const wxUniChar& uc)
     { char c; return uc.GetAsChar(&c) ? wxCRT_StrchrA(s.c_str(), c) : NULL; }
 inline const char* wxStrrchr(const wxString& s, const wxUniChar& uc)
@@ -745,9 +745,9 @@ inline const char* wxStrrchr(const wxString& s, const wxUniCharRef& uc)
     { char c; return uc.GetAsChar(&c) ? wxCRT_StrrchrA(s.c_str(), c) : NULL; }
 #endif // wxNO_IMPLICIT_WXSTRING_ENCODING
 inline const wchar_t* wxStrchr(const wxString& s, wchar_t c)
-    { return wxCRT_StrchrW((const wchar_t*)s.c_str(), c); }
+    { return wxCRT_StrchrW(static_cast<const wchar_t*>(s.c_str()), c); }
 inline const wchar_t* wxStrrchr(const wxString& s, wchar_t c)
-    { return wxCRT_StrrchrW((const wchar_t*)s.c_str(), c); }
+    { return wxCRT_StrrchrW(static_cast<const wchar_t*>(s.c_str()), c); }
 #ifndef wxNO_IMPLICIT_WXSTRING_ENCODING
 inline const char* wxStrchr(const wxCStrData& s, char c)
     { return wxCRT_StrchrA(s.AsChar(), c); }
@@ -963,7 +963,7 @@ inline double wxStrtod(const wxString& nptr, T endptr)
     // wc_str(), because we store the pointer into (possibly converted)
     // buffer in endptr and so it must be valid even when wxStrtod() returns
     typedef typename wxStrtoxCharType<T>::Type CharType;
-    return wxStrtod((CharType)nptr.c_str(),
+    return wxStrtod(static_cast<CharType>(nptr.c_str()),
                     wxStrtoxCharType<T>::AsPointer(endptr));
 }
 template<typename T>
@@ -1008,7 +1008,7 @@ inline double wxStrtod(const wxCStrData& nptr, std::nullptr_t)
             return name(nptr.wx_str(), p, base);                              \
         }                                                                     \
         typedef typename wxStrtoxCharType<T>::Type CharType;                  \
-        return name((CharType)nptr.c_str(),                                   \
+        return name(static_cast<CharType>(nptr.c_str()),                                   \
                     wxStrtoxCharType<T>::AsPointer(endptr),                   \
                     base);                                                    \
     }                                                                         \

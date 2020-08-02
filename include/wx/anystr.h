@@ -62,7 +62,7 @@ public:
 
     // at least VC7 also needs this one or it complains about ambiguity
     // for !anystr expressions
-    bool operator!() const { return !((bool)*this); }
+    bool operator!() const { return !this->operator bool(); }
 
 
 #ifndef wxNO_IMPLICIT_WXSTRING_ENCODING

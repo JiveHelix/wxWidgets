@@ -115,8 +115,8 @@ public:
     wxLongLongNative(wxInt32 hi, wxUint32 lo)
     {
         // cast to wxLongLong_t first to avoid precision loss!
-        m_ll = ((wxLongLong_t) hi) << 32;
-        m_ll |= (wxLongLong_t) lo;
+        m_ll = static_cast<wxLongLong_t>(hi) << 32;
+        m_ll |= static_cast<wxLongLong_t>(lo);
     }
 #if wxUSE_LONGLONG_WX
     wxLongLongNative(wxLongLongWx ll);
@@ -132,7 +132,7 @@ public:
     wxLongLongNative& operator=(wxLongLong_t ll)
         { m_ll = ll; return *this; }
     wxLongLongNative& operator=(wxULongLong_t ll)
-        { m_ll = ll; return *this; }
+        { m_ll = static_cast<wxLongLong_t>(ll); return *this; }
 #endif // !wxLongLongNative
     wxLongLongNative& operator=(const wxULongLongNative &ll);
     wxLongLongNative& operator=(int l)
@@ -142,7 +142,7 @@ public:
     wxLongLongNative& operator=(unsigned int l)
         { m_ll = l; return *this; }
     wxLongLongNative& operator=(unsigned long l)
-        { m_ll = l; return *this; }
+        { m_ll = static_cast<wxLongLong_t>(l); return *this; }
 #if wxUSE_LONGLONG_WX
     wxLongLongNative& operator=(wxLongLongWx ll);
     wxLongLongNative& operator=(const class wxULongLongWx &ll);
@@ -153,7 +153,7 @@ public:
         // would have ambiguity with "ll = int" and also because we don't want
         // to have implicit conversions between doubles and wxLongLongs
     wxLongLongNative& Assign(double d)
-        { m_ll = (wxLongLong_t)d; return *this; }
+        { m_ll = static_cast<wxLongLong_t>(d); return *this; }
 
     // assignment operators from wxLongLongNative is ok
 
@@ -356,8 +356,8 @@ public:
     wxULongLongNative(wxUint32 hi, wxUint32 lo) : m_ll(0)
     {
         // cast to wxLongLong_t first to avoid precision loss!
-        m_ll = ((wxULongLong_t) hi) << 32;
-        m_ll |= (wxULongLong_t) lo;
+        m_ll = static_cast<wxULongLong_t>(hi) << 32;
+        m_ll |= static_cast<wxULongLong_t>(lo);
     }
 
 #if wxUSE_LONGLONG_WX
@@ -374,18 +374,18 @@ public:
     wxULongLongNative& operator=(wxULongLong_t ll)
         { m_ll = ll; return *this; }
     wxULongLongNative& operator=(wxLongLong_t ll)
-        { m_ll = ll; return *this; }
+        { m_ll = static_cast<wxULongLong_t>(ll); return *this; }
 #endif // !wxLongLongNative
     wxULongLongNative& operator=(int l)
-        { m_ll = l; return *this; }
+        { m_ll = static_cast<wxULongLong_t>(l); return *this; }
     wxULongLongNative& operator=(long l)
-        { m_ll = l; return *this; }
+        { m_ll = static_cast<wxULongLong_t>(l); return *this; }
     wxULongLongNative& operator=(unsigned int l)
         { m_ll = l; return *this; }
     wxULongLongNative& operator=(unsigned long l)
         { m_ll = l; return *this; }
     wxULongLongNative& operator=(const wxLongLongNative &ll)
-        { m_ll = ll.GetValue(); return *this; }
+        { m_ll = static_cast<wxULongLong_t>(ll.GetValue()); return *this; }
 #if wxUSE_LONGLONG_WX
     wxULongLongNative& operator=(wxLongLongWx ll);
     wxULongLongNative& operator=(const class wxULongLongWx &ll);
@@ -565,7 +565,7 @@ private:
 inline
 wxLongLongNative& wxLongLongNative::operator=(const wxULongLongNative &ll)
 {
-    m_ll = ll.GetValue();
+    m_ll = static_cast<wxLongLong_t>(ll.GetValue());
     return *this;
 }
 
@@ -1061,7 +1061,7 @@ inline wxULongLong operator+(unsigned long l, const wxULongLong& ull) { return u
 inline wxLongLong operator-(unsigned long l, const wxULongLong& ull)
 {
     const wxULongLong ret = wxULongLong(l) - ull;
-    return wxLongLong((wxInt32)ret.GetHi(),ret.GetLo());
+    return wxLongLong(static_cast<wxInt32>(ret.GetHi()),ret.GetLo());
 }
 
 #if wxUSE_LONGLONG_NATIVE && wxUSE_STREAMS

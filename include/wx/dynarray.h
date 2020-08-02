@@ -135,7 +135,7 @@ public:
                   e = this->rend();
             for ( const_reverse_iterator i = b; i != e; ++i )
                 if ( *i == item )
-                    return (int)(e - i - 1);
+                    return static_cast<int>(e - i - 1);
         }
         else
         {
@@ -143,7 +143,7 @@ public:
                   e = this->end();
             for ( const_iterator i = b; i != e; ++i )
                 if ( *i == item )
-                    return (int)(i - b);
+                    return static_cast<int>(i - b);
         }
 
         return wxNOT_FOUND;
@@ -153,8 +153,9 @@ public:
     {
         Sorter p(fnCompare);
         const_iterator i = std::lower_bound(this->begin(), this->end(), lItem, p);
-        return i != this->end() && !p(lItem, *i) ? (int)(i - this->begin())
-                                                 : wxNOT_FOUND;
+        return i != this->end() && !p(lItem, *i)
+            ? static_cast<int>(i - this->begin())
+            : wxNOT_FOUND;
     }
 
     size_t IndexForInsert(T lItem, SCMPFUNC fnCompare) const
@@ -185,7 +186,7 @@ public:
     {
         int n = Index(lItem);
         wxCHECK_RET( n != wxNOT_FOUND, _WX_ERROR_REMOVE );
-        RemoveAt((size_t)n);
+        RemoveAt(static_cast<size_t>(n));
     }
 
     void RemoveAt(size_t uiIndex, size_t nRemove = 1)

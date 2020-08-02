@@ -300,7 +300,7 @@ extern WXDLLIMPEXP_BASE void wxOnAssert(const char *file,
 
     // a version without any additional message, don't use unless condition
     // itself is fully self-explanatory
-    #define wxASSERT(cond) wxASSERT_MSG(cond, (const char*)NULL)
+    #define wxASSERT(cond) wxASSERT_MSG(cond, static_cast<const char*>(NULL))
 
     // wxFAIL is a special form of assert: it always triggers (and so is
     // usually used in normally unreachable code)

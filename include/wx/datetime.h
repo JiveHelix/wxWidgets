@@ -345,7 +345,7 @@ public:
             if ( wday == Inv_WeekDay )
                 ComputeWeekDay();
 
-            return (WeekDay)wday;
+            return static_cast<WeekDay>(wday);
         }
 
         // add the given number of months to the date keeping it normalized
@@ -739,7 +739,7 @@ public:
             { return GetTm(tz).year; }
         // get the month (Inv_Month if date is invalid)
     Month GetMonth(const TimeZone& tz = Local) const
-            { return (Month)GetTm(tz).mon; }
+            { return static_cast<Month>(GetTm(tz).mon); }
         // get the month day (in 1..31 range, 0 if date is invalid)
     wxDateTime_t GetDay(const TimeZone& tz = Local) const
             { return GetTm(tz).mday; }
@@ -1640,7 +1640,7 @@ inline wxDateTime wxDateTime::Today()
 
 inline wxDateTime& wxDateTime::Set(time_t timet)
 {
-    if ( timet == (time_t)-1 )
+    if ( timet == static_cast<time_t>(-1) )
     {
         m_time = wxInvalidDateTime.m_time;
     }
@@ -1684,7 +1684,7 @@ inline wxDateTime& wxDateTime::Set(const Tm& tm)
 {
     wxASSERT_MSG( tm.IsValid(), wxT("invalid broken down date/time") );
 
-    return Set(tm.mday, (Month)tm.mon, tm.year,
+    return Set(tm.mday, static_cast<Month>(tm.mon), tm.year,
                tm.hour, tm.min, tm.sec, tm.msec);
 }
 
@@ -1723,10 +1723,10 @@ inline time_t wxDateTime::GetTicks() const
     wxASSERT_MSG( IsValid(), wxT("invalid wxDateTime"));
     if ( !IsInStdRange() )
     {
-        return (time_t)-1;
+        return static_cast<time_t>(-1);
     }
 
-    return (time_t)((m_time / (long)TIME_T_FACTOR).ToLong()) + WX_TIME_BASE_OFFSET;
+    return static_cast<time_t>((m_time / static_cast<long>(TIME_T_FACTOR)).ToLong()) + WX_TIME_BASE_OFFSET;
 }
 
 inline bool wxDateTime::SetToLastWeekDay(WeekDay weekday,
@@ -2026,14 +2026,14 @@ inline wxTimeSpan& wxTimeSpan::Subtract(const wxTimeSpan& diff)
 
 inline wxTimeSpan& wxTimeSpan::Multiply(int n)
 {
-    m_diff *= (long)n;
+    m_diff *= static_cast<long>(n);
 
     return *this;
 }
 
 inline wxTimeSpan wxTimeSpan::Multiply(int n) const
 {
-    return wxTimeSpan(m_diff * (long)n);
+    return wxTimeSpan(m_diff * static_cast<long>(n));
 }
 
 inline wxTimeSpan wxTimeSpan::Abs() const
