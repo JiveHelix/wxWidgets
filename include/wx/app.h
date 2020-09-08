@@ -865,8 +865,8 @@ public:
                                         "your program");                    \
         return new appname;                                                 \
     }                                                                       \
-    wxAppInitializer                                                        \
-        wxTheAppInitializer((wxAppInitializerFunction) wxCreateApp)
+    wxAppInitializer wxTheAppInitializer(                                   \
+        static_cast<wxAppInitializerFunction>(wxCreateApp))
 
 // Same as wxIMPLEMENT_APP() normally but doesn't include themes support in
 // wxUniversal builds
